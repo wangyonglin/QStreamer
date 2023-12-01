@@ -5,7 +5,7 @@ MultimediaHandler::MultimediaHandler()
 
 }
 
-int MultimediaHandler::Init()
+int MultimediaHandler::Init(const char *url)
 {
     int ret = -1;
      avsync.InitClock();
@@ -18,10 +18,13 @@ int MultimediaHandler::Init()
 
     // 1.解复用
     dexmuxThread= new DexmuxThread(audio_packet_queue,video_packet_queue);
-    ret=dexmuxThread->Init("C:/Users/wangyonglin/Videos/002.mp4");
+    ret=dexmuxThread->Init(url);
     if(ret<0){
         qDebug("dexmuxThread.init(...) failed");
         return -1;
+    }else{
+        __video_width= dexmuxThread->video_width();
+        __video_height=dexmuxThread->video_height();
     }
 
     // 2.解码线程初始化
@@ -90,5 +93,15 @@ int MultimediaHandler::Start()
 int MultimediaHandler::Stop()
 {
 
+}
+
+int MultimediaHandler::width()
+{
+    return __video_width;
+}
+
+int MultimediaHandler::height()
+{
+    return __video_height;
 }
 

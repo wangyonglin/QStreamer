@@ -1,11 +1,17 @@
-#ifndef DEXMUXRUNNABLE_H
-#define DEXMUXRUNNABLE_H
+#ifndef DEXMUXUTILS_H
+#define DEXMUXUTILS_H
 
 
-class DexmuxRunnable
+class DexmuxUtils
 {
+
 public:
-    DexmuxRunnable();
+    DexmuxUtils();
+    ~DexmuxUtils();
+
+
+
+
 };
 
-#endif // DEXMUXRUNNABLE_H
+#endif // DEXMUXUTILS_H

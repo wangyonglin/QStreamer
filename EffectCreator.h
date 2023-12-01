@@ -2,12 +2,43 @@
 #define EFFECTDISPLAY_H
 
 #include <QWidget>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
+#include <QVideoWidget>
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QFont>
+#include <QPen>
+#include <QPainter>
+#include <QPaintEvent>
+#include <MultimediaHandler.h>
+#include <OpenGLWidget.h>
+#include <TranscodeUtils.h>
 
-class EffectDisplay : public QWidget
+namespace Ui {
+class EffectCreator;
+}
+class EffectCreator : public QWidget
 {
-    Q_OBJECT
+
 public:
-    explicit EffectDisplay(QWidget *parent = nullptr);
+    explicit EffectCreator(const QString &url, QWidget *parent = nullptr);
+    ~EffectCreator();
+public:
+    void repaint(AVFrame *frame);
+
+    virtual void paintEvent(QPaintEvent *event);
+    virtual void resizeEvent(QResizeEvent *event);
+
+private:
+    QString     __url;
+    TranscodeUtils * __transcodeUtils = nullptr;
+    int __image_width;
+    int __image_height;
+    uint8_t * __dst_data[4];
+    MultimediaHandler multimedia;
+
 
 signals:
 

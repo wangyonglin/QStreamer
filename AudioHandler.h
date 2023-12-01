@@ -3,17 +3,15 @@
 
 #include <QThread>
 #include <QObject>
-#include <FFmpegManager.h>
 #include <QElapsedTimer>
 #include <QThread>
 #include <QTime>
 #include <BaseThread.h>
 #include <AVFrameQueue.h>
-
 #include <bits/ios_base.h>
-
 #include <AVFrameQueue.h>
 #include <Synchronized.h>
+
 typedef struct AudioParams
 {
     int freq; //采样率

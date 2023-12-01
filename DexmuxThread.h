@@ -17,20 +17,23 @@ extern "C" {        // 用C规则编译指定的代码
 #include <QDebug>
 #include <BaseThread.h>
 #include <AVPacketQueue.h>
-
-class DexmuxThread : public BaseThread
+#include <DexmuxUtils.h>
+class DexmuxThread : public BaseThread,DexmuxUtils
 {
 public:
     DexmuxThread(AVPacketQueue *audio_packet_queue,AVPacketQueue *video_packet_queue);
     ~DexmuxThread();
     int Init(const char * _url);
+     int video_width() ;
+     int video_height() ;
     int Start();
     int Stop();
     void Run() override;
-     AVCodecParameters * getAudioCodecParameters();
-     AVCodecParameters * getVideoCodecParameters();
-     AVRational AudioStreamTimebase();
-        AVRational VideoStreamTimebase();
+    AVCodecParameters * getAudioCodecParameters();
+    AVCodecParameters * getVideoCodecParameters();
+
+    AVRational AudioStreamTimebase();
+    AVRational VideoStreamTimebase();
     std::string url;
     int video_stream_idx = -1, audio_stream_idx = -1;
 private:

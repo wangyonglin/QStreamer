@@ -1,4 +1,4 @@
-#include "Canvas.h"
+#include "OpenGLWidget.h"
 
 extern "C" {        // 用C规则编译指定的代码
 #include "libavcodec/avcodec.h"
@@ -6,23 +6,24 @@ extern "C" {        // 用C规则编译指定的代码
 }
 
 #if USE_WINDOW
-Canvas::Canvas(QOpenGLWindow::UpdateBehavior updateBehavior, QWindow *parent):QOpenGLWindow(updateBehavior, parent)
+OpenGLWidget::OpenGLWidget(QOpenGLWindow::UpdateBehavior updateBehavior, QWindow *parent):QOpenGLWindow(updateBehavior, parent)
 {
     // 初始化视图大小，由于Shader里面有YUV转RGB的代码，会初始化显示为绿色，这里通过将视图大小设置为0避免显示绿色背景
     m_pos = QPointF(0, 0);
     m_zoomSize = QSize(0, 0);
 }
 #else
-Canvas::Canvas(QWidget *parent, Qt::WindowFlags f): QOpenGLWidget(parent, f)
+OpenGLWidget::OpenGLWidget(QWidget *parent, Qt::WindowFlags f): QOpenGLWidget(parent, f)
 {
     // 初始化视图大小，由于Shader里面有YUV转RGB的代码，会初始化显示为绿色，这里通过将视图大小设置为0避免显示绿色背景
+
     m_pos = QPointF(0, 0);
     m_zoomSize = QSize(0, 0);
 }
 #endif
 
 
-Canvas::~Canvas()
+OpenGLWidget::~OpenGLWidget()
 {
     if(!isValid()) return;        // 如果控件和OpenGL资源（如上下文）已成功初始化，则返回true。
     this->makeCurrent(); // 通过将相应的上下文设置为当前上下文并在该上下文中绑定帧缓冲区对象，为呈现此小部件的OpenGL内容做准备。
@@ -49,7 +50,7 @@ Canvas::~Canvas()
     glDeleteVertexArrays(1, &VAO);
 }
 
-void Canvas::repaint(AVFrame *frame)
+void OpenGLWidget::repaint(AVFrame *frame)
 {
     // 如果帧长宽为0则不需要绘制
     if(!frame || frame->width == 0 || frame->height == 0) return;
@@ -126,7 +127,7 @@ static GLuint indices[] = {
     0, 1, 3,
     1, 2, 3
 };
-void Canvas::initializeGL()
+void OpenGLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
 
@@ -185,7 +186,7 @@ void Canvas::initializeGL()
 
 }
 
-void Canvas::resizeGL(int w, int h)
+void OpenGLWidget::resizeGL(int w, int h)
 {
     if(m_size.width()  < 0 || m_size.height() < 0) return;
 
@@ -205,7 +206,7 @@ void Canvas::resizeGL(int w, int h)
     this->update(QRect(0, 0, w, h));
 }
 
-void Canvas::paintGL()
+void OpenGLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);     // 将窗口的位平面区域（背景）设置为先前由glClearColor、glClearDepth和选择的值
     glViewport(m_pos.x(), m_pos.y(), m_zoomSize.width(), m_zoomSize.height());  // 设置视图大小实现图片自适应

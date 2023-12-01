@@ -1,6 +1,12 @@
-#include "DexmuxRunnable.h"
+#include "DexmuxUtils.h"
 
-DexmuxRunnable::DexmuxRunnable()
+DexmuxUtils::DexmuxUtils()
 {
 
 }
+
+DexmuxUtils::~DexmuxUtils()
+{
+
+}
+

@@ -22,22 +22,22 @@ struct AVFrame;
 
 #if USE_WINDOW
 #include <QOpenGLWindow>
-class Canvas : public QOpenGLWindow, public  QOpenGLFunctions_3_3_Core
+class OpenGLWidget : public QOpenGLWindow, public  QOpenGLFunctions_3_3_Core
 #else
 #include <QOpenGLWidget>
-class Canvas : public QOpenGLWidget, public  QOpenGLFunctions_3_3_Core
+class OpenGLWidget : public QOpenGLWidget, public  QOpenGLFunctions_3_3_Core
 #endif
 {
     Q_OBJECT
 public:
 #if USE_WINDOW
-    explicit Canvas(UpdateBehavior updateBehavior = NoPartialUpdate, QWindow *parent = nullptr);
+    explicit OpenGLWidget(UpdateBehavior updateBehavior = NoPartialUpdate, QWindow *parent = nullptr);
 #else
-    explicit Canvas(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit OpenGLWidget(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
 #endif
-     ~Canvas() override;
+     ~OpenGLWidget() override;
 
-    void repaint(AVFrame* frame);             // 重绘
+    virtual  void repaint(AVFrame* frame);             // 重绘
 
 
 protected:

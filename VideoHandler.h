@@ -2,7 +2,7 @@
 #define OPENGLTHREAD_H
 #include <QThread>
 #include <QObject>
-#include <FFmpegManager.h>
+
 #include <QElapsedTimer>
 #include <QThread>
 #include <QTime>
@@ -21,6 +21,7 @@ public:
     int Start();
 signals:
     void repaint(AVFrame* frame);               // 重绘
+
 protected:
     void run() override;
 private:

@@ -1,9 +1,8 @@
-#include "widget.h"
+#include "MainWidget.h"
 
 #include <QApplication>
-#include <AudioRender.h>
-#include <FFmpegManager.h>
-#include <AudioContext.h>
+
+
 #include <QObject>
 #include<DexmuxThread.h>
 
@@ -11,8 +10,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    Widget w;
-    w.show();
+    MainWidget mainWidget;
+    mainWidget.show();
     return a.exec();
 
 }

@@ -55,8 +55,28 @@ int DexmuxThread::Init(const char *_url)
     }
        av_dump_format(fmt_ctx, 0, url.c_str(), 0);
        qInfo("Init leave");
-    return 0;
+       return 0;
 }
+
+int DexmuxThread::video_width()
+{
+    if(video_stream_idx>=0){
+       return fmt_ctx->streams[video_stream_idx]->codecpar->width;
+    }else{
+        return 0;
+    }
+}
+
+int DexmuxThread::video_height()
+{
+    if(video_stream_idx>=0){
+       return fmt_ctx->streams[video_stream_idx]->codecpar->height;
+    }else{
+        return 0;
+    }
+}
+
+
 
 int DexmuxThread::Start()
 {

@@ -1,4 +1,4 @@
-QT       += core gui multimedia
+QT       += core gui multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -19,32 +19,40 @@ SOURCES += \
     AVFrameQueue.cpp \
     AVPacketQueue.cpp \
     AudioHandler.cpp \
-    AudioRender.cpp \
     BaseQueue.cpp \
     BaseThread.cpp \
-    Canvas.cpp \
     DecodecThread.cpp \
     DexmuxThread.cpp \
+    DexmuxUtils.cpp \
+    EffectCreator.cpp \
+    MainLayout.cpp \
+    MainWidget.cpp \
     MultimediaHandler.cpp \
+    OpenGLWidget.cpp \
+    SpecialEffects.cpp \
     Synchronized.cpp \
+    TranscodeUtils.cpp \
     VideoHandler.cpp \
-    main.cpp \
-    widget.cpp
+    main.cpp
 
 HEADERS += \
     AVFrameQueue.h \
     AVPacketQueue.h \
     AudioHandler.h \
-    AudioRender.h \
     BaseQueue.h \
     BaseThread.h \
-    Canvas.h \
     DecodecThread.h \
     DexmuxThread.h \
+    DexmuxUtils.h \
+    EffectCreator.h \
+    MainLayout.h \
+    MainWidget.h \
     MultimediaHandler.h \
+    OpenGLWidget.h \
+    SpecialEffects.h \
     Synchronized.h \
-    VideoHandler.h \
-    widget.h
+    TranscodeUtils.h \
+    VideoHandler.h
 
 INCLUDEPATH +=$$PWD/ffmpeg-6.0-full_build-shared/include
 INCLUDEPATH += $$PWD/SDL2-2.28.3/include
@@ -59,7 +67,7 @@ LIBS += $$PWD/ffmpeg-6.0-full_build-shared/lib/avcodec.lib \
         $$PWD/SDL2-2.28.3/lib/x64/SDL2main.lib
 
 FORMS += \
-    widget.ui
+    MainWidget.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

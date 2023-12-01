@@ -1,28 +1,29 @@
 #ifndef RUNNABLEMANAGER_H
 #define RUNNABLEMANAGER_H
-#include <Canvas.h>
+#include <OpenGLWidget.h>
 #include <DexmuxThread.h>
 #include <DecodecThread.h>
 #include <VideoHandler.h>
 #include <AudioHandler.h>
 
-class Runnable{
 
 
-};
-
-class MultimediaHandler :public Runnable
+class MultimediaHandler
 {
 public:
     MultimediaHandler();
-    int Init();
+    int Init(const char *url);
+    int width();
+    int height();
     int Start();
     int Stop();
 
+private:
+    int __video_width=0;
+    int __video_height=0;
 public:
     Synchronized avsync;
-
-    Canvas * canvas = nullptr;
+    OpenGLWidget * openglWidget = nullptr;
     DexmuxThread *dexmuxThread = nullptr;
     DecodecThread *audio_decodec_thread= nullptr;
     DecodecThread *video_decodec_thread= nullptr;
