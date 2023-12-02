@@ -1,5 +1,5 @@
 #include "EffectCreator.h"
-
+Q_DECLARE_METATYPE(AVFrame)  //注册结构体，否则无法通过信号传递AVFrame
 EffectCreator::EffectCreator(const QString &url,QWidget *parent)
     :QWidget(parent),__url(url)
 {
@@ -9,9 +9,9 @@ EffectCreator::EffectCreator(const QString &url,QWidget *parent)
     multimedia.Init(__url.toStdString().data());
     __image_width=multimedia.width();
     __image_height=multimedia.height();
-   __transcodeUtils= new TranscodeUtils(__image_width,__image_height,AV_PIX_FMT_RGB32);
+   __transcodeUtils= new TranscodeUtils(__image_width,__image_height,AV_PIX_FMT_RGBA);
     connect(multimedia.video_handler, &VideoHandler::repaint, this, &EffectCreator::repaint, Qt::BlockingQueuedConnection);
-    multimedia.Start();
+
 }
 
 EffectCreator::~EffectCreator()
@@ -29,11 +29,23 @@ void EffectCreator::repaint(AVFrame *frame)
 
 }
 
+void EffectCreator::play()
+{
+     multimedia.Start();
+     show();
+}
+
+void EffectCreator::stop()
+{
+    hide();
+    multimedia.Stop();
+}
+
 void EffectCreator::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
     QPainter painter(this);
-    QImage image(__dst_data[0], __image_width, __image_height, QImage::Format_RGB32);
+    QImage image(__dst_data[0], __image_width, __image_height, QImage::Format_RGBA8888);
     painter.drawImage(rect(), image);
 
 }

@@ -21,14 +21,18 @@ SOURCES += \
     AudioHandler.cpp \
     BaseQueue.cpp \
     BaseThread.cpp \
+    DecodecBase.cpp \
+    DecodecRunnable.cpp \
     DecodecThread.cpp \
+    DexmuxBase.cpp \
+    DexmuxRunnable.cpp \
     DexmuxThread.cpp \
-    DexmuxUtils.cpp \
     EffectCreator.cpp \
     MainLayout.cpp \
     MainWidget.cpp \
     MultimediaHandler.cpp \
     OpenGLWidget.cpp \
+    RunnableBase.cpp \
     SpecialEffects.cpp \
     Synchronized.cpp \
     TranscodeUtils.cpp \
@@ -41,14 +45,18 @@ HEADERS += \
     AudioHandler.h \
     BaseQueue.h \
     BaseThread.h \
+    DecodecBase.h \
+    DecodecRunnable.h \
     DecodecThread.h \
+    DexmuxBase.h \
+    DexmuxRunnable.h \
     DexmuxThread.h \
-    DexmuxUtils.h \
     EffectCreator.h \
     MainLayout.h \
     MainWidget.h \
     MultimediaHandler.h \
     OpenGLWidget.h \
+    RunnableBase.h \
     SpecialEffects.h \
     Synchronized.h \
     TranscodeUtils.h \

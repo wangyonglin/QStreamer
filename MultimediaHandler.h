@@ -6,7 +6,8 @@
 #include <VideoHandler.h>
 #include <AudioHandler.h>
 
-
+#include <DexmuxRunnable.h>
+#include <DecodecRunnable.h>
 
 class MultimediaHandler
 {
@@ -34,6 +35,9 @@ private:
     AVPacketQueue* video_packet_queue=  nullptr;
     AVFrameQueue * audio_frame_queue= nullptr;
     AVFrameQueue * video_frame_queue= nullptr;
+    DexmuxRunnable * __dexmux_runnable=nullptr;
+    DecodecRunnable * __audio_decodec_runnable =nullptr;
+     DecodecRunnable * __video_decodec_runnable =nullptr;
 };
 
 #endif // RUNNABLEMANAGER_H

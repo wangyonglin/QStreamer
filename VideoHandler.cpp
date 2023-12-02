@@ -31,6 +31,12 @@ int VideoHandler::Start()
 
     return 0;
 }
+
+int VideoHandler::Stop()
+{
+    emit this->Stop();
+     return 0;
+}
 #define REFRESH_RATE 0.01
 void VideoHandler::run()
 {
@@ -63,7 +69,10 @@ void VideoHandler::refresh(double *remaining_time)
 
 
         frame = frame_queue->Pop(1);
+
         emit repaint(frame);
+
+
        av_frame_free(&frame);
     }
 }

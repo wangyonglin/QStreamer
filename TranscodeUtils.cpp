@@ -14,6 +14,10 @@ TranscodeUtils::~TranscodeUtils()
 
 int TranscodeUtils::transcoding(uint8_t **dst_data, AVFrame *frame)
 {
+    if(!frame){
+         qDebug( "TranscodeUtils::transcoding frame not null\n");
+         return -1;
+    }
     if(__img_convert_ctx==nullptr){
       if(__init(&__img_convert_ctx,frame)!=0){
           qDebug( "Could not allocate destination image\n");

@@ -19,6 +19,7 @@ public:
        AVRational time_base;
     int Init(Synchronized *_avsync, AVRational _time_base,AVFrameQueue * frame_queue);
     int Start();
+    int Stop();
 signals:
     void repaint(AVFrame* frame);               // 重绘
 

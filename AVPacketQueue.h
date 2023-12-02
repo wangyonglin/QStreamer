@@ -25,9 +25,11 @@ public:
     void Release();
     int Size();
     int Push(AVPacket *pak);
+
     AVPacket *Pop(const int timeout);
 private:
     BaseQueue<AVPacket *> queue;
+
 };
 
 #endif // AVPACKETQUEUE_H

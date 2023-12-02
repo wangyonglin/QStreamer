@@ -50,7 +50,7 @@ int DecodecThread::Init(AVCodecParameters *codec_param)
 
 int DecodecThread::Start()
 {
-    if(pth==nullptr){
+    if(!pth){
         pth = new std::thread(&DecodecThread::Run,this);
         if(!pth){
             qDebug("DecodecThread::Start() failed");

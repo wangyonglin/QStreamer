@@ -16,9 +16,6 @@
 #include <OpenGLWidget.h>
 #include <TranscodeUtils.h>
 
-namespace Ui {
-class EffectCreator;
-}
 class EffectCreator : public QWidget
 {
 
@@ -27,7 +24,8 @@ public:
     ~EffectCreator();
 public:
     void repaint(AVFrame *frame);
-
+    void play();
+    void stop();
     virtual void paintEvent(QPaintEvent *event);
     virtual void resizeEvent(QResizeEvent *event);
 

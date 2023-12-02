@@ -110,6 +110,7 @@ AudioHandler::~AudioHandler()
 
 int AudioHandler::Init(Synchronized *_avsync, AVRational _time_base,AVCodecParameters* _audio_codec_parameters, AVFrameQueue *_frame_queue)
 {
+    if(!_audio_codec_parameters)return -1;
     int ret =-1;
     if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_TIMER)!=0){
         qDebug("Could not initialize SDL - %s\n", SDL_GetError());

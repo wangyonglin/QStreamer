@@ -17,13 +17,16 @@ extern "C" {        // 用C规则编译指定的代码
 #include <QDebug>
 #include <BaseThread.h>
 #include <AVPacketQueue.h>
-#include <DexmuxUtils.h>
-class DexmuxThread : public BaseThread,DexmuxUtils
+#include <DexmuxBase.h>
+class DexmuxThread : public BaseThread,DexmuxBase
 {
 public:
     DexmuxThread(AVPacketQueue *audio_packet_queue,AVPacketQueue *video_packet_queue);
     ~DexmuxThread();
-    int Init(const char * _url);
+    int init(const QString & url);
+
+    AVPacketQueue * getAudioPacketQueue();
+    AVPacketQueue * getVideoPacketQueue();
      int video_width() ;
      int video_height() ;
     int Start();
@@ -34,10 +37,13 @@ public:
 
     AVRational AudioStreamTimebase();
     AVRational VideoStreamTimebase();
-    std::string url;
+   // std::string url;
     int video_stream_idx = -1, audio_stream_idx = -1;
 private:
+    QString __url;
     char err2str[256]={0};
+    AVPacketQueue *__audio_packet_queue=nullptr;
+    AVPacketQueue *__video_packet_queue=nullptr;
     AVPacketQueue *audio_packet_queue=nullptr;
     AVPacketQueue *video_packet_queue=nullptr;
     AVFormatContext * fmt_ctx=nullptr;
