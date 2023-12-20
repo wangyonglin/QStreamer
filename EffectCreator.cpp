@@ -6,23 +6,25 @@ EffectCreator::EffectCreator(const QString &url,QWidget *parent)
 
     setAttribute(Qt::WA_TranslucentBackground); //背景透明
     setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
-    multimedia.Init(__url.toStdString().data());
-    __image_width=multimedia.width();
-    __image_height=multimedia.height();
-   __transcodeUtils= new TranscodeUtils(__image_width,__image_height,AV_PIX_FMT_RGBA);
-    connect(multimedia.video_handler, &VideoHandler::repaint, this, &EffectCreator::repaint, Qt::BlockingQueuedConnection);
+//    yoloMultimedia= new YoloMultimedia(this);
+//    yoloMultimedia->initDexmuxRunnable(__url.toStdString().data());
+//    __image_width=yoloMultimedia->width();
+//    __image_height=yoloMultimedia->height();
+
+//    __video_transcoder= new FFmpegTranscoder::VideoTranscoder(__image_width,__image_height,AV_PIX_FMT_RGBA);
+//    yoloMultimedia->initVideoRunnable(this);
 
 }
 
 EffectCreator::~EffectCreator()
 {
-    delete __transcodeUtils;
+    delete __video_transcoder;
 }
 
 void EffectCreator::repaint(AVFrame *frame)
 {
     if(!frame || frame->width == 0 || frame->height == 0)return;
-    if(__transcodeUtils->transcoding(__dst_data,frame)==0){
+    if(__video_transcoder->convertFrame(__dst_data,frame)==0){
      update();
     }
     av_frame_unref(frame);
@@ -31,14 +33,14 @@ void EffectCreator::repaint(AVFrame *frame)
 
 void EffectCreator::play()
 {
-     multimedia.Start();
+
      show();
 }
 
 void EffectCreator::stop()
 {
     hide();
-    multimedia.Stop();
+
 }
 
 void EffectCreator::paintEvent(QPaintEvent *event)
@@ -52,6 +54,7 @@ void EffectCreator::paintEvent(QPaintEvent *event)
 
 void EffectCreator::resizeEvent(QResizeEvent *event)
 {
+     Q_UNUSED(event)
     resize(this->width(),this->height());
 }
 

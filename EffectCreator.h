@@ -12,9 +12,9 @@
 #include <QPen>
 #include <QPainter>
 #include <QPaintEvent>
-#include <MultimediaHandler.h>
+
 #include <OpenGLWidget.h>
-#include <TranscodeUtils.h>
+#include <FFmpegTranscoder.h>
 
 class EffectCreator : public QWidget
 {
@@ -31,11 +31,11 @@ public:
 
 private:
     QString     __url;
-    TranscodeUtils * __transcodeUtils = nullptr;
+    FFmpegTranscoder::VideoTranscoder * __video_transcoder = nullptr;
     int __image_width;
     int __image_height;
     uint8_t * __dst_data[4];
-    MultimediaHandler multimedia;
+
 
 
 signals:

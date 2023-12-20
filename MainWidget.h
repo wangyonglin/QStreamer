@@ -4,12 +4,15 @@
 #include <QWidget>
 
 #include <QtWidgets>
-#include <MultimediaHandler.h>
+
 #include <OpenGLWidget.h>
 #include <MainLayout.h>
 
 #include <SpecialEffects.h>
 #include <QString>
+
+#include <YoloSystems.h>
+#include <YoloPlayer.h>
 namespace Ui {
 class MainWidget;
 }
@@ -26,8 +29,9 @@ public:
 private:
     Ui::MainWidget *ui;
     QHBoxLayout layout;
-    MultimediaHandler multimedia;
-    OpenGLWidget * openglWidget = nullptr;
+    YoloSystems::AudioPlayer * __audio_player=nullptr;
+    YoloSystems::VideoPlayer * __videoPlayer=nullptr;
+    YoloPlayer *yoloPlayer=nullptr;
 
 };
 

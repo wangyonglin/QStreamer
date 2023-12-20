@@ -1,7 +1,9 @@
 #include "MainWidget.h"
 #include "ui_MainWidget.h"
 #include "EffectCreator.h"
-Q_DECLARE_METATYPE(AVFrame)  //注册结构体，否则无法通过信号传递AVFrame
+
+
+//Q_DECLARE_METATYPE(AVFrame)  //注册结构体，否则无法通过信号传递AVFrame
 EffectCreator *effectCreator;
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -10,20 +12,19 @@ MainWidget::MainWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     layout.setMargin(0); // 控件与窗体的边距
-     layout.setSpacing(0); // 控件之间的间距
-    multimedia.Init("C:/Users/wangyonglin/Videos/av.mp4");
-    openglWidget =  new OpenGLWidget(parent);
+    layout.setSpacing(0); // 控件之间的间距
+    YoloSystems::AudioPlayer::initAudioPlayer();
+    __audio_player= new  YoloSystems::AudioPlayer(44100,AUDIO_S16SYS,2);
+
+    __audio_player->open();
+
+    __videoPlayer =new  YoloSystems::VideoPlayer();
+    yoloPlayer=new YoloPlayer();
+    yoloPlayer->initYoloPlayer("C:/Users/wangyonglin/Videos/av.mp4",__audio_player,__videoPlayer);
 
 
-    connect(multimedia.video_handler, &VideoHandler::repaint, openglWidget, &OpenGLWidget::repaint, Qt::BlockingQueuedConnection);
-    multimedia.Start();
 
-    effectCreator=new EffectCreator(QString("C:/Users/wangyonglin/Videos/av.mov"),this);
- // effectCreator=new EffectCreator(QString("C:/Users/wangyonglin/Videos/002.mp4"),this);
-    effectCreator->play();
-
-
-    layout.addWidget(openglWidget);
+   layout.addWidget(__videoPlayer);
 
     setLayout(&layout);
 
@@ -34,21 +35,21 @@ MainWidget::MainWidget(QWidget *parent) :
 
 MainWidget::~MainWidget()
 {
-    delete effectCreator;
+    delete __videoPlayer;
     delete ui;
 }
 
 
 void MainWidget::resizeEvent(QResizeEvent *event)
 {
-
-
-    effectCreator->resize(this->width(), this->height());
+    Q_UNUSED(event)
+  //  effectCreator->resize(this->width(), this->height());
 
 }
 
 void MainWidget::moveEvent(QMoveEvent *event)
 {
-    effectCreator->move(event->pos());
+     Q_UNUSED(event)
+   // effectCreator->move(event->pos());
 
 }

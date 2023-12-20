@@ -16,51 +16,37 @@ DEFINES += SDL_MAIN_HANDLED
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    AVFrameQueue.cpp \
-    AVPacketQueue.cpp \
-    AudioHandler.cpp \
     BaseQueue.cpp \
-    BaseThread.cpp \
-    DecodecBase.cpp \
-    DecodecRunnable.cpp \
-    DecodecThread.cpp \
-    DexmuxBase.cpp \
-    DexmuxRunnable.cpp \
-    DexmuxThread.cpp \
     EffectCreator.cpp \
+    FFmpegTranscoder.cpp \
     MainLayout.cpp \
     MainWidget.cpp \
-    MultimediaHandler.cpp \
     OpenGLWidget.cpp \
-    RunnableBase.cpp \
     SpecialEffects.cpp \
-    Synchronized.cpp \
-    TranscodeUtils.cpp \
-    VideoHandler.cpp \
+    YoloFFmpeg.cpp \
+    YoloPlayer.cpp \
+    YoloQueue.cpp \
+    YoloRouter.cpp \
+    YoloRunnable.cpp \
+    YoloSystems.cpp \
+    YoloThread.cpp \
     main.cpp
 
 HEADERS += \
-    AVFrameQueue.h \
-    AVPacketQueue.h \
-    AudioHandler.h \
     BaseQueue.h \
-    BaseThread.h \
-    DecodecBase.h \
-    DecodecRunnable.h \
-    DecodecThread.h \
-    DexmuxBase.h \
-    DexmuxRunnable.h \
-    DexmuxThread.h \
     EffectCreator.h \
+    FFmpegTranscoder.h \
     MainLayout.h \
     MainWidget.h \
-    MultimediaHandler.h \
     OpenGLWidget.h \
-    RunnableBase.h \
     SpecialEffects.h \
-    Synchronized.h \
-    TranscodeUtils.h \
-    VideoHandler.h
+    YoloFFmpeg.h \
+    YoloPlayer.h \
+    YoloQueue.h \
+    YoloRouter.h \
+    YoloRunnable.h \
+    YoloSystems.h \
+    YoloThread.h
 
 INCLUDEPATH +=$$PWD/ffmpeg-6.0-full_build-shared/include
 INCLUDEPATH += $$PWD/SDL2-2.28.3/include

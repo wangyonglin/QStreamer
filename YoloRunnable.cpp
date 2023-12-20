@@ -1,11 +1,11 @@
-#include "RunnableBase.h"
+#include "YoloRunnable.h"
 
-RunnableBase::RunnableBase()
+YoloRunnable::YoloRunnable()
 {
 
 }
 
-RunnableBase::~RunnableBase()
+YoloRunnable::~YoloRunnable()
 {
     if(pRunnableBase){
         stopRunnable();
@@ -26,7 +26,7 @@ RunnableBase::~RunnableBase()
 //  return 0;
 //}
 
-int RunnableBase::stopRunnable()
+int YoloRunnable::stopRunnable()
 {
     if(pRunnableBase){
         pRunnableBase->join();

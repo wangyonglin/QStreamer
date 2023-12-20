@@ -3,13 +3,11 @@
 #include <string>
 #include <thread>
 
-
-
-class RunnableBase
+class YoloRunnable
 {
 public:
-    RunnableBase();
-    ~RunnableBase();
+    YoloRunnable();
+    ~YoloRunnable();
     template<typename _Callable, typename... _Args>
     std::thread * startRunnable(_Callable&& __func, _Args&&... __args)
     {
@@ -17,7 +15,7 @@ public:
             pRunnableBase = new std::thread(std::forward<_Callable>(__func),
                                             std::forward<_Args>(__args)...);
             if(!pRunnableBase){
-                fprintf(stderr,"DecodecThread::Start() failed");
+                fprintf(stderr,"YoloRunnable::Start() failed");
                 return nullptr;
             }
             return pRunnableBase;

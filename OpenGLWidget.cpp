@@ -1,3 +1,4 @@
+/*
 #include "OpenGLWidget.h"
 
 extern "C" {        // 用C规则编译指定的代码
@@ -235,3 +236,4 @@ void OpenGLWidget::paintGL()
     }
     m_program->release();
 }
+*/

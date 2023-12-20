@@ -7,6 +7,7 @@
  * @时间       2022/10/14
  * @备注
  *****************************************************************************/
+/*
 #ifndef INCLUDE_FFMPEG_WIDGET_H
 #define INCLUDE_FFMPEG_WIDGET_H
 
@@ -61,3 +62,4 @@ private:
 };
 
 #endif // INCLUDE_FFMPEG_WIDGET_H
+*/
