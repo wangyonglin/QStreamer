@@ -11,8 +11,8 @@
 #include <SpecialEffects.h>
 #include <QString>
 
-#include <YoloSystems.h>
-#include <YoloPlayer.h>
+#include <FFmpegOutput.h>
+#include <FFmpegPlayer.h>
 namespace Ui {
 class MainWidget;
 }
@@ -29,9 +29,11 @@ public:
 private:
     Ui::MainWidget *ui;
     QHBoxLayout layout;
-    YoloSystems::AudioPlayer * __audio_player=nullptr;
-    YoloSystems::VideoPlayer * __videoPlayer=nullptr;
-    YoloPlayer *yoloPlayer=nullptr;
+    FFmpegOutput::AudioPlayer * __audio_player=nullptr;
+    FFmpegOutput::VideoPlayer * __videoPlayer=nullptr;
+    FFmpegPlayer *__main_player=nullptr;
+     FFmpegPlayer *__effect_player=nullptr;
+       FFmpegOutput::VideoPlayer *__pVideoPlayer=nullptr;
 
 };
 

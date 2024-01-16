@@ -1,61 +1,86 @@
-#include "YoloPlayer.h"
+#include "FFmpegPlayer.h"
 
-YoloPlayer::YoloPlayer(QWidget *parent)
+FFmpegPlayer::FFmpegPlayer(QWidget *parent )
     :QWidget(parent)
 {
 
 }
 
-YoloPlayer::~YoloPlayer()
-{
 
+
+FFmpegPlayer::FFmpegPlayer(QWidget *parent, const std::string &urlString)
+ :QWidget(parent),__urlString(urlString)
+{
+    initFFmpegPlayer(__urlString);
 }
 
-int YoloPlayer::initYoloPlayer(const std::string &url,YoloSystems::AudioPlayer * audioPlayer,YoloSystems::VideoPlayer * videoPlayer)
+FFmpegPlayer::~FFmpegPlayer()
+{
+    freeFFmpegPlayer();
+}
+
+int FFmpegPlayer::initFFmpegPlayer(const std::string &urlString)
 {
 
-    __audioPacketQueue =new YoloQueue::PacketQueue();
-    __videoPacketQueue =new YoloQueue::PacketQueue();
-    __audioFrameQueue= new YoloQueue::FrameQueue();
-    __videoFrameQueue= new YoloQueue::FrameQueue();
-    __dexmuxThread= new YoloThread::DexmuxThread(__audioPacketQueue,__videoPacketQueue);
-    __dexmuxThread->startThread(url);
+      av_synctime.initClock(FFmpegPublic::ClockType::External_Master);
+    __audioPacketQueue =new FFmpegPublic::Queue::Packet();
+    __videoPacketQueue =new FFmpegPublic::Queue::Packet();
+    __audioFrameQueue= new FFmpegPublic::Queue::Frame();
+    __videoFrameQueue= new FFmpegPublic::Queue::Frame();
+    __dexmuxThread= new FFmpegThread::DexmuxThread(__audioPacketQueue,__videoPacketQueue);
+    __dexmuxThread->startThread(urlString);
 
 
-    __audioDecidecThread =new YoloThread::DecodecThread(__audioPacketQueue,__audioFrameQueue);
+    __audioDecidecThread =new FFmpegThread::DecodecThread(__audioPacketQueue,__audioFrameQueue);
     __audioDecidecThread->startThread(__dexmuxThread->getAudioCodecParameters());
 
-    __videoDecidecThread =new YoloThread::DecodecThread(__videoPacketQueue,__videoFrameQueue);
+    __videoDecidecThread =new FFmpegThread::DecodecThread(__videoPacketQueue,__videoFrameQueue);
     __videoDecidecThread->startThread(__dexmuxThread->getVideoCodecParameters());
 
-    __audioRouter= new YoloRouter::AudioRouter(__audioFrameQueue);
-    __audioRouter->startAudioRouter(audioPlayer,__audioDecidecThread->getCodeContext());
+    __audioRouter= new FFmpegRouter::AudioRouter(__audioFrameQueue);
 
 
-    __videoRouter=new  YoloRouter::VideoRouter(__videoFrameQueue);
-    __videoRouter->startVideoRouter(videoPlayer,__videoDecidecThread->getCodeContext());
-        return 0;
+    __videoRouter=new  FFmpegRouter::VideoRouter(__videoFrameQueue);
+
+    return 0;
 }
 
-bool YoloPlayer::initVideo()
+void FFmpegPlayer::initAudioPlayer(FFmpegOutput::AudioPlayer *pAudioPlayer)
 {
-
+    __audioRouter->startAudioRouter(&av_synctime,pAudioPlayer,__audioDecidecThread->getCodeContext());
 }
 
-void YoloPlayer::freeYoloPlayer()
+void FFmpegPlayer::initVideoPlayer(FFmpegOutput::VideoPlayer *pVideoPlayer)
+{
+     __videoRouter->startVideoRouter(&av_synctime,pVideoPlayer,__videoDecidecThread->getCodeContext());
+}
+
+
+
+void FFmpegPlayer::freeFFmpegPlayer()
 {
     if(__dexmuxThread){
         __dexmuxThread->stopThread();
         __dexmuxThread->freeThread();
     }
+
+    if(__audioDecidecThread){
+        __audioDecidecThread->stopThread();
+    }
+    if(__videoDecidecThread){
+        __videoDecidecThread->stopThread();
+    }
 }
 
-void YoloPlayer::playYoloPlayer()
+void FFmpegPlayer::playFFmpegPlayer()
 {
 
 }
 
-void YoloPlayer::stopYoloPlayer()
+void FFmpegPlayer::stopFFmpegPlayer()
 {
 
 }
+
+
+

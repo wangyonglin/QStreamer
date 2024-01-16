@@ -1,15 +1,16 @@
 #ifndef YOLORENDER_H
 #define YOLORENDER_H
 
-#include <YoloSystems.h>
-#include <YoloQueue.h>
+#include <FFmpegOutput.h>
+
 #include <OpenGLWidget.h>
 #include <QObject>
 #include <QThread>
+#include <FFmpegPublic.h>
 Q_DECLARE_METATYPE(AVFrame)
-namespace YoloRouter{
+namespace FFmpegRouter{
 
-    class AudioRouter :public YoloRunnable{
+    class AudioRouter :public FFmpegPublic::Thread::Runnable{
     public:
         typedef struct{
             int channels;
@@ -18,12 +19,12 @@ namespace YoloRouter{
             enum AVSampleFormat sample_fmt;
         }ResampleValues;
     public:
-        AudioRouter(YoloQueue::FrameQueue * frameQueue);
+        AudioRouter(FFmpegPublic::Queue::Frame * frameQueue);
         ~AudioRouter();
-        void startAudioRouter(YoloSystems::AudioPlayer *player,AVCodecContext *codec_ctx);
+        void startAudioRouter(FFmpegPublic::SyncTime * synctime,FFmpegOutput::AudioPlayer *player,AVCodecContext *codec_ctx);
     private:
-        int initAudioRouter(YoloSystems::AudioPlayer *player,AVCodecContext *codec_ctx);
-        virtual void Runnable() override;
+        int initAudioRouter(FFmpegPublic::SyncTime * synctime,FFmpegOutput::AudioPlayer *player,AVCodecContext *codec_ctx);
+        virtual void entityRunnable() override;
          AVSampleFormat toSampleFormat(const  SDL_AudioFormat &sample_fmt);
          int resampleConvert( SwrContext*au_convert_ctx,
                               uint8_t **dst_data,
@@ -36,29 +37,31 @@ namespace YoloRouter{
          void resampleFree(SwrContext *au_convert_ctx);
 
          char err2str[256]={0};
-
-        YoloSystems::AudioPlayer *au_player=nullptr;
+        FFmpegPublic::SyncTime * av_synctime=nullptr;
+        FFmpegOutput::AudioPlayer *au_player=nullptr;
         AVCodecContext *au_codec_ctx=nullptr;
         ResampleValues resampleValues;
-        YoloQueue::FrameQueue * __frameQueue=nullptr;
+        FFmpegPublic::Queue::Frame * __frameQueue=nullptr;
     };
 
-    class VideoRouter :public QObject,public YoloRunnable  {
+    class VideoRouter :public QObject,public FFmpegPublic::Thread::Runnable  {
 
     Q_OBJECT
     public:
-        VideoRouter(YoloQueue::FrameQueue *frameQueue);
+        VideoRouter(FFmpegPublic::Queue::Frame *frameQueue);
         ~VideoRouter();
-        void startVideoRouter(YoloSystems::VideoPlayer * videoPlayer,AVCodecContext *codec_ctx);
+        void startVideoRouter(FFmpegPublic::SyncTime * synctime,FFmpegOutput::VideoPlayer * pVideoPlayer,AVCodecContext *codec_ctx);
     signals:
         void repaint(AVFrame* frame);               // 重绘
     private:
-        YoloQueue::FrameQueue *__frameQueue=nullptr;
+        FFmpegPublic::SyncTime * av_synctime;
+        FFmpegPublic::Queue::Frame *__frameQueue=nullptr;
         AVCodecContext *__video_codec_ctx=nullptr;
-        int initVideoRouter(YoloSystems::VideoPlayer * videoPlayer,AVCodecContext *codec_ctx);
-        int initVideoRouter(QImage * image,AVCodecContext *codec_ctx);
+
+          int initVideoRouter(FFmpegPublic::SyncTime * synctime,FFmpegOutput::VideoPlayer * pVideoPlayer,AVCodecContext *codec_ctx);
+        int initVideoRouter(FFmpegPublic::SyncTime * synctime,QImage * image,AVCodecContext *codec_ctx);
         void refresh();
-        virtual void Runnable() override;
+         virtual void entityRunnable() override;
     };
 }
 #endif // YOLORENDER_H

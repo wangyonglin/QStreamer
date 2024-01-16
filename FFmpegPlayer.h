@@ -1,35 +1,44 @@
-#ifndef YOLOPLAYER_H
-#define YOLOPLAYER_H
+#ifndef FFmpegPlayer_H
+#define FFmpegPlayer_H
 #include <QWidget>
-#include <YoloFFmpeg.h>
-#include <YoloThread.h>
-#include <YoloRouter.h>
-#include <YoloQueue.h>
+#include <FFmpegBase.h>
+#include <FFmpegThread.h>
+#include <FFmpegRouter.h>
+#include <FFmpegPublic.h>
+#include <FFmpegPublic.h>
 
-class YoloPlayer : public QWidget
+class FFmpegPlayer : public QWidget
 {
 public:
-    YoloPlayer(QWidget *parent = nullptr);
-    ~YoloPlayer();
-    int initYoloPlayer(const std::string &url,YoloSystems::AudioPlayer * audioPlayer,YoloSystems::VideoPlayer * videoPlayer);
-    bool initVideo();
-    bool initAudio();
-    void freeYoloPlayer();
-    void playYoloPlayer();
-    void stopYoloPlayer();
+    FFmpegPlayer(QWidget *parent = nullptr);
+    FFmpegPlayer(QWidget *parent = nullptr,const std::string &urlString=nullptr);
+    ~FFmpegPlayer();
+    void initAudioPlayer(FFmpegOutput::AudioPlayer * pAudioPlayer);
+    void initVideoPlayer(FFmpegOutput::VideoPlayer * pVideoPlayer);
+    void freeFFmpegPlayer();
+    void playFFmpegPlayer();
+    void stopFFmpegPlayer();
 private:
-    YoloThread::DexmuxThread* __dexmuxThread=nullptr;
-
-    YoloThread::DecodecThread * __audioDecidecThread =nullptr;
-    YoloThread::DecodecThread * __videoDecidecThread =nullptr;
+    int initFFmpegPlayer(const std::string &stringURL);
 
 
-    YoloRouter::AudioRouter *__audioRouter=nullptr;
-    YoloRouter::VideoRouter * __videoRouter=nullptr;
-    YoloQueue::PacketQueue *__audioPacketQueue=nullptr;
-    YoloQueue::PacketQueue *__videoPacketQueue=nullptr;
-    YoloQueue::FrameQueue * __audioFrameQueue=nullptr;
-    YoloQueue::FrameQueue * __videoFrameQueue=nullptr;
+
+
+private:
+    std::string __urlString;
+    FFmpegPublic::SyncTime av_synctime;
+    FFmpegThread::DexmuxThread* __dexmuxThread=nullptr;
+    FFmpegThread::DecodecThread * __audioDecidecThread =nullptr;
+    FFmpegThread::DecodecThread * __videoDecidecThread =nullptr;
+    FFmpegRouter::AudioRouter *__audioRouter=nullptr;
+    FFmpegRouter::VideoRouter * __videoRouter=nullptr;
+    FFmpegPublic::Queue::Packet *__audioPacketQueue=nullptr;
+    FFmpegPublic::Queue::Packet *__videoPacketQueue=nullptr;
+    FFmpegPublic::Queue::Frame * __audioFrameQueue=nullptr;
+    FFmpegPublic::Queue::Frame * __videoFrameQueue=nullptr;
+    int __image_width=0;
+    int __image_height=0;
+
 };
 
-#endif // YOLOPLAYER_H
+#endif // FFmpegPlayer_H

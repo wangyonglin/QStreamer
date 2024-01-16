@@ -1,7 +1,7 @@
-#include "YoloThread.h"
+#include "FFmpegThread.h"
 
-YoloThread::DexmuxThread::DexmuxThread(YoloQueue::PacketQueue* audioPacketQueue,
-                                       YoloQueue::PacketQueue* videoPacketQueue)
+FFmpegThread::DexmuxThread::DexmuxThread(FFmpegPublic::Queue::Packet* audioPacketQueue,
+                                       FFmpegPublic::Queue::Packet* videoPacketQueue)
     :__audioPacketQueue(audioPacketQueue),
       __videoPacketQueue(videoPacketQueue)
 {
@@ -9,29 +9,31 @@ YoloThread::DexmuxThread::DexmuxThread(YoloQueue::PacketQueue* audioPacketQueue,
 }
 
 
-YoloThread::DexmuxThread::~DexmuxThread()
+FFmpegThread::DexmuxThread::~DexmuxThread()
 {
 
 }
 
 
-void YoloThread::DexmuxThread::freeThread()
+void FFmpegThread::DexmuxThread::freeThread()
 {
     this->freeDexmuxFFmpeg();
 }
 
-void YoloThread::DexmuxThread::startThread(const std::string &url)
+void FFmpegThread::DexmuxThread::startThread(const std::string &url)
 {
     initDexmuxFFmpeg(url);
-     startRunnable(&YoloThread::DexmuxThread::Runnable,this);
+     startRunnable(&FFmpegThread::DexmuxThread::entityRunnable,this);
 }
 
-void YoloThread::DexmuxThread::stopThread()
+void FFmpegThread::DexmuxThread::stopThread()
 {
-     stopRunnable();
+    stopRunnable();
 }
 
-void YoloThread::DexmuxThread::Runnable()
+
+
+void FFmpegThread::DexmuxThread::entityRunnable()
 {
     qInfo("Run into");
        int ret = 0;
@@ -40,10 +42,10 @@ void YoloThread::DexmuxThread::Runnable()
 
        while (abort != 1) {
 
-//           if(__audioPacketQueue->getPacketSize() > 100 || __videoPacketQueue->getPacketSize() > 100) {
-//               std::this_thread::sleep_for(std::chrono::milliseconds(10));
-//               continue;
-//           }
+           if(__audioPacketQueue->getPacketPlusSize() > 100 || __videoPacketQueue->getPacketPlusSize() > 100) {
+               std::this_thread::sleep_for(std::chrono::milliseconds(10));
+               continue;
+           }
 
            ret = av_read_frame(getFormatContext(), &pkt);
            if(ret < 0) {
@@ -55,12 +57,12 @@ void YoloThread::DexmuxThread::Runnable()
 
                ret = __audioPacketQueue->addPacketPlus(&pkt,getAudioTimebase());
                av_packet_unref(&pkt);
-               qInfo("audio pkt queue size:%d", __audioPacketQueue->getPacketPlusSize());
+             //  qInfo("audio pkt queue size:%d", __audioPacketQueue->getPacketPlusSize());
            } else if(pkt.stream_index == getVideoStreamIndex()) {
 
                ret = __videoPacketQueue->addPacketPlus(&pkt,getVideoTimebase());
                av_packet_unref(&pkt);
-               qInfo("video pkt queue size:%d", __videoPacketQueue->getPacketPlusSize());
+            //   qInfo("video pkt queue size:%d", __videoPacketQueue->getPacketPlusSize());
            } else {
                av_packet_unref(&pkt);
            }
@@ -70,31 +72,31 @@ void YoloThread::DexmuxThread::Runnable()
 
 
 
-YoloThread::DecodecThread::DecodecThread(YoloQueue::PacketQueue* packetQueue,YoloQueue::FrameQueue * frameQueue)
+FFmpegThread::DecodecThread::DecodecThread(FFmpegPublic::Queue::Packet* packetQueue,FFmpegPublic::Queue::Frame * frameQueue)
     :__packetQueue(packetQueue),__frameQueue(frameQueue)
 {
 
 }
 
-YoloThread::DecodecThread::~DecodecThread()
+FFmpegThread::DecodecThread::~DecodecThread()
 {
 
 }
 
-void YoloThread::DecodecThread::startThread(AVCodecParameters *codecParameters)
+void FFmpegThread::DecodecThread::startThread(AVCodecParameters *codecParameters)
 {
     initDecodecFFmpeg(codecParameters);
-     startRunnable(&YoloThread::DecodecThread::Runnable,this);
+     startRunnable(&FFmpegThread::DecodecThread::entityRunnable,this);
 }
 
-void YoloThread::DecodecThread::stopThread()
+void FFmpegThread::DecodecThread::stopThread()
 {
     stopRunnable();
 }
 
 
 
-void YoloThread::DecodecThread::Runnable()
+void FFmpegThread::DecodecThread::entityRunnable()
 {
 
     while (abort != 1) {
@@ -103,10 +105,10 @@ void YoloThread::DecodecThread::Runnable()
 //            continue;
 //        }
 
-        YoloFFmpeg::PacketPlus *packetPlus=nullptr;
+        FFmpegPublic::PacketPlus *packetPlus=nullptr;
         if(__packetQueue->getPacketPlus(&packetPlus,10)==0){
-            int ret = SendPacketPlus(packetPlus);
-            YoloFFmpeg::PacketPlus::freePacketPlus(&packetPlus);
+            int ret = FFmpegPublic::Funcation::SendPacketPlus(getCodeContext(),packetPlus);
+            FFmpegPublic::PacketPlus::freePacketPlus(&packetPlus);
             if(ret < 0) {
                 av_strerror(ret, err2str, sizeof(err2str));
                 qDebug() << "avcodec_send_packet failed ,err2str:" << err2str;
@@ -115,8 +117,8 @@ void YoloThread::DecodecThread::Runnable()
 
             // 读取解码后的frame
             while (ret >= 0) {
-                YoloFFmpeg::FramePlus * framePlus=nullptr;
-                ret = ReceiveFramePlus(&framePlus);
+                FFmpegPublic::FramePlus * framePlus=nullptr;
+                ret = FFmpegPublic::Funcation::ReceiveFramePlus(getCodeContext(),&framePlus);
                 if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
                     break;
                 else if (ret < 0) {

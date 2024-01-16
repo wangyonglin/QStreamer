@@ -1,20 +1,20 @@
-#include "YoloRouter.h"
+#include "FFmpegRouter.h"
 #include <QDebug>
 
 
-YoloRouter::AudioRouter::AudioRouter(YoloQueue::FrameQueue *frameQueue)
+FFmpegRouter::AudioRouter::AudioRouter(FFmpegPublic::Queue::Frame *frameQueue)
     :__frameQueue(frameQueue)
 {
 
 }
 
-void YoloRouter::AudioRouter::startAudioRouter(YoloSystems::AudioPlayer *player, AVCodecContext *codec_ctx)
+void FFmpegRouter::AudioRouter::startAudioRouter(FFmpegPublic::SyncTime * synctime,FFmpegOutput::AudioPlayer *player, AVCodecContext *codec_ctx)
 {
-    initAudioRouter(player,codec_ctx);
-    startRunnable(&YoloRouter::AudioRouter::Runnable,this);
+    initAudioRouter(synctime,player,codec_ctx);
+    startRunnable(&FFmpegRouter::AudioRouter::entityRunnable,this);
 }
 
-int YoloRouter::AudioRouter::initAudioRouter(YoloSystems::AudioPlayer *player, AVCodecContext *codec_ctx)
+int FFmpegRouter::AudioRouter::initAudioRouter(FFmpegPublic::SyncTime * synctime,FFmpegOutput::AudioPlayer *player, AVCodecContext *codec_ctx)
 {
     resampleValues.channel_layout=av_get_default_channel_layout(2);
     resampleValues.channels=player->obtained.channels;
@@ -22,17 +22,18 @@ int YoloRouter::AudioRouter::initAudioRouter(YoloSystems::AudioPlayer *player, A
     resampleValues.sample_rate=player->obtained.freq;
     this->au_codec_ctx=codec_ctx;
     this->au_player = player;
+    av_synctime=synctime;
     return 0;
 }
 
-void YoloRouter::AudioRouter::Runnable()
+void FFmpegRouter::AudioRouter::entityRunnable()
 {
     uint8_t* dst_data=nullptr;
     SwrContext * au_convert_ctx=nullptr;
     unsigned int dst_datasize=0;
     while (true) {
         if(au_player){
-            YoloFFmpeg::FramePlus* framePlus=nullptr;
+            FFmpegPublic::FramePlus* framePlus=nullptr;
            ;
             if( __frameQueue->getFramePlus(&framePlus,10)==0){
 
@@ -46,12 +47,12 @@ void YoloRouter::AudioRouter::Runnable()
                     resampleFree(au_convert_ctx);
                 }
             }
-          YoloFFmpeg::FramePlus::freeFramePlus(&framePlus);
+          FFmpegPublic::FramePlus::freeFramePlus(&framePlus);
         }
     }
 }
 
-AVSampleFormat YoloRouter::AudioRouter::toSampleFormat(const SDL_AudioFormat &sample_fmt)
+AVSampleFormat FFmpegRouter::AudioRouter::toSampleFormat(const SDL_AudioFormat &sample_fmt)
 {
     AVSampleFormat fmt;
     switch (sample_fmt) {
@@ -72,7 +73,7 @@ AVSampleFormat YoloRouter::AudioRouter::toSampleFormat(const SDL_AudioFormat &sa
     return fmt;
 }
 
-int YoloRouter::AudioRouter::resampleConvert(SwrContext *au_convert_ctx,
+int FFmpegRouter::AudioRouter::resampleConvert(SwrContext *au_convert_ctx,
                                                      uint8_t **dst_data,
                                                      unsigned int *dst_datasize,
                                                      AVFrame * frame)
@@ -99,8 +100,8 @@ int YoloRouter::AudioRouter::resampleConvert(SwrContext *au_convert_ctx,
     return 0;
 }
 
-int YoloRouter::AudioRouter::resampleInit(SwrContext **au_convert_ctx,
-                                                  YoloRouter::AudioRouter::ResampleValues &resampleValues,
+int FFmpegRouter::AudioRouter::resampleInit(SwrContext **au_convert_ctx,
+                                                  FFmpegRouter::AudioRouter::ResampleValues &resampleValues,
                                                    AVFrame *frame)
 {
     (*au_convert_ctx) = swr_alloc_set_opts(NULL,
@@ -127,52 +128,53 @@ int YoloRouter::AudioRouter::resampleInit(SwrContext **au_convert_ctx,
     return 0;
 }
 
-void YoloRouter::AudioRouter::resampleClear(uint8_t *dst_data)
+void FFmpegRouter::AudioRouter::resampleClear(uint8_t *dst_data)
 {
     if(dst_data){
      av_free(dst_data);
     }
 }
 
-void YoloRouter::AudioRouter::resampleFree(SwrContext *au_convert_ctx)
+void FFmpegRouter::AudioRouter::resampleFree(SwrContext *au_convert_ctx)
 {
     if(au_convert_ctx){
          swr_free((SwrContext **)(&au_convert_ctx));
     }
 }
 
-YoloRouter::VideoRouter::VideoRouter(YoloQueue::FrameQueue *frameQueue)
+FFmpegRouter::VideoRouter::VideoRouter(FFmpegPublic::Queue::Frame *frameQueue)
     :__frameQueue(frameQueue)
 {
 
 }
 
-YoloRouter::VideoRouter::~VideoRouter()
+FFmpegRouter::VideoRouter::~VideoRouter()
 {
 
 }
 
-void YoloRouter::VideoRouter::startVideoRouter(YoloSystems::VideoPlayer * videoPlayer,AVCodecContext *codec_ctx)
-{
 
-    initVideoRouter(videoPlayer,codec_ctx);
-    startRunnable(&YoloRouter::VideoRouter::Runnable,this);
+void FFmpegRouter::VideoRouter::startVideoRouter(FFmpegPublic::SyncTime *synctime, FFmpegOutput::VideoPlayer *videoPlayer, AVCodecContext *codec_ctx)
+{
+    initVideoRouter(synctime,videoPlayer,codec_ctx);
+    startRunnable(&FFmpegRouter::VideoRouter::entityRunnable,this);
 }
 
-int YoloRouter::VideoRouter::initVideoRouter(YoloSystems::VideoPlayer * videoPlayer,AVCodecContext *codec_ctx)
+
+int FFmpegRouter::VideoRouter::initVideoRouter(FFmpegPublic::SyncTime *synctime, FFmpegOutput::VideoPlayer *pVideoPlayer, AVCodecContext *codec_ctx)
 {
     Q_UNUSED(codec_ctx);
 
-    videoPlayer->connect(this, &YoloRouter::VideoRouter::repaint, videoPlayer, &YoloSystems::VideoPlayer::repaint, Qt::BlockingQueuedConnection);
+    pVideoPlayer->connect(this, &FFmpegRouter::VideoRouter::repaint, pVideoPlayer, &FFmpegOutput::VideoPlayer::repaint, Qt::BlockingQueuedConnection);
     return 0;
 }
 
-int YoloRouter::VideoRouter::initVideoRouter(QImage *image, AVCodecContext *codec_ctx)
+int FFmpegRouter::VideoRouter::initVideoRouter(FFmpegPublic::SyncTime * synctime,QImage *image, AVCodecContext *codec_ctx)
 {
-
+     return 0;
 }
 
-void YoloRouter::VideoRouter::Runnable()
+void FFmpegRouter::VideoRouter::entityRunnable()
 {
     while (true) {
          refresh();
@@ -180,11 +182,11 @@ void YoloRouter::VideoRouter::Runnable()
 
 }
 // 0.01秒
-void YoloRouter::VideoRouter::refresh()
+void FFmpegRouter::VideoRouter::refresh()
 {
-    YoloFFmpeg::FramePlus * framePlus=nullptr;
+    FFmpegPublic::FramePlus * framePlus=nullptr;
     if(__frameQueue->getFramePlus(&framePlus,1)==0) {
         emit repaint(framePlus->frame);
-        YoloFFmpeg::FramePlus::freeFramePlus(&framePlus);
+        FFmpegPublic::FramePlus::freeFramePlus(&framePlus);
     }
 }

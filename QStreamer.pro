@@ -16,37 +16,33 @@ DEFINES += SDL_MAIN_HANDLED
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    BaseQueue.cpp \
     EffectCreator.cpp \
+    FFmpegBase.cpp \
+    FFmpegOutput.cpp \
+    FFmpegPlayer.cpp \
+    FFmpegPublic.cpp \
+    FFmpegRouter.cpp \
+    FFmpegThread.cpp \
     FFmpegTranscoder.cpp \
     MainLayout.cpp \
     MainWidget.cpp \
     OpenGLWidget.cpp \
     SpecialEffects.cpp \
-    YoloFFmpeg.cpp \
-    YoloPlayer.cpp \
-    YoloQueue.cpp \
-    YoloRouter.cpp \
-    YoloRunnable.cpp \
-    YoloSystems.cpp \
-    YoloThread.cpp \
     main.cpp
 
 HEADERS += \
-    BaseQueue.h \
     EffectCreator.h \
+    FFmpegBase.h \
+    FFmpegOutput.h \
+    FFmpegPlayer.h \
+    FFmpegPublic.h \
+    FFmpegRouter.h \
+    FFmpegThread.h \
     FFmpegTranscoder.h \
     MainLayout.h \
     MainWidget.h \
     OpenGLWidget.h \
-    SpecialEffects.h \
-    YoloFFmpeg.h \
-    YoloPlayer.h \
-    YoloQueue.h \
-    YoloRouter.h \
-    YoloRunnable.h \
-    YoloSystems.h \
-    YoloThread.h
+    SpecialEffects.h
 
 INCLUDEPATH +=$$PWD/ffmpeg-6.0-full_build-shared/include
 INCLUDEPATH += $$PWD/SDL2-2.28.3/include

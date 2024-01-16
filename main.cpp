@@ -8,5 +8,5 @@ int main(int argc, char *argv[])
     MainWidget mainWidget;
     mainWidget.show();
     return a.exec();
-
+//Resolving
 }

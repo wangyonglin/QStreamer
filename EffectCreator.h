@@ -2,39 +2,36 @@
 #define EFFECTDISPLAY_H
 
 #include <QWidget>
-#include <QMediaPlayer>
-#include <QMediaPlaylist>
-#include <QVideoWidget>
-#include <QLabel>
-#include <QHBoxLayout>
 #include <QLabel>
 #include <QFont>
 #include <QPen>
 #include <QPainter>
 #include <QPaintEvent>
+#include <FFmpegPublic.h>
+#include <FFmpegOutput.h>
 
-#include <OpenGLWidget.h>
-#include <FFmpegTranscoder.h>
 
-class EffectCreator : public QWidget
+
+class EffectCreator : public FFmpegOutput::VideoPlayer
 {
 
 public:
-    explicit EffectCreator(const QString &url, QWidget *parent = nullptr);
+    explicit EffectCreator(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
     ~EffectCreator();
 public:
-    void repaint(AVFrame *frame);
-    void play();
-    void stop();
-    virtual void paintEvent(QPaintEvent *event);
-    virtual void resizeEvent(QResizeEvent *event);
+
+//    void repaint(AVFrame *frame);
+//    void play();
+//    void stop();
+//    virtual void paintEvent(QPaintEvent *event);
+//    virtual void resizeEvent(QResizeEvent *event);
 
 private:
-    QString     __url;
-    FFmpegTranscoder::VideoTranscoder * __video_transcoder = nullptr;
-    int __image_width;
-    int __image_height;
-    uint8_t * __dst_data[4];
+//    QString     __url;
+//    FFmpegPublic::VideoTranscoder * __pVideoTranscoder=nullptr;
+//    int __image_width;
+//    int __image_height;
+//    uint8_t * __dst_data[4];
 
 
 
